@@ -1,0 +1,17 @@
+
+$printer = Get-CimInstance -Class Win32_Printer -Filter "Name='Brother DCP-L2530DW series Printer'"
+Invoke-CimMethod -InputObject $printer -MethodName SetDefaultPrinter
+
+
+
+$excel = new-object -comobject excel.application
+$excelFiles = Get-ChildItem -Path C:\PrintPowershell\Pdfs -Include *.xls, *.xlsm -Recurse
+Foreach($file in $excelFiles)
+{
+   $workbook = $excel.workbooks.open($file.fullname)
+   $worksheet = $workbook.worksheets.item(1)
+   $excel.Run("PrintRaport", '30')
+   $workbook.save()
+   $workbook.close()
+}
+$excel.quit()
